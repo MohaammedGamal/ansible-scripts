@@ -1,0 +1,40 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks: # to be done before any other tasks
+
+  - name: install updates (Ubuntu)
+    apt:
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+  - name: install updates (Fedora)
+    dnf:
+      update_cache: yes
+    when: ansible_distribution == "Fedora"
+
+- hosts: ubuntu-servers
+  become: true
+  tasks:
+
+  - name: install apache and php for ubuntu servers
+    apt:
+      name:
+        - apache2
+        - libapache2-mod-php
+      state: latest
+    #   update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+- hosts: fedora-servers
+  become: true
+  tasks:
+
+  - name: install apache and php for centos servers
+    dnf:
+      name:
+        - httpd
+        - php
+      state: latest
+    when: ansible_distribution == "Fedora"

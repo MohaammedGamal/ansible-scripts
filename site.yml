@@ -1,0 +1,59 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks: # to be done before any other tasks
+
+  - name: install updates (Ubuntu)
+    # tags: always # will always run if this is the tag value
+    apt:
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+  - name: install updates (Fedora)
+    # tags: always
+    dnf:
+      update_cache: yes
+    when: ansible_distribution == "Fedora"
+
+- hosts: ubuntu-server-1
+  become: true
+  tasks:
+
+  - name: install apache and php for ubuntu servers
+    tags: apache, php, ubuntu # these tags like identifiers so if i mentioned specific tag ansible will run this tagged play only
+    apt:
+      name:
+        - vlc
+        - apache2
+        - libapache2-mod-php
+      state: latest
+    #   update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+- hosts: ubuntu-server-2
+  become: true
+  tasks:
+
+  - name: install apache and php for ubuntu servers
+    tags: apache, php, ubuntu # these tags like identifiers so if i mentioned specific tag ansible will run this tagged play only
+    apt:
+      name:
+        - vlc
+      state: latest
+    #   update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+
+- hosts: fedora-servers
+  become: true
+  tasks:
+
+  - name: install apache and php for centos servers
+    tags: apache2, php-support, fedora
+    dnf:
+      name:
+        - httpd
+        - php
+      state: latest
+    when: ansible_distribution == "Fedora"

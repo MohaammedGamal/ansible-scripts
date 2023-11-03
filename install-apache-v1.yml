@@ -1,0 +1,26 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: update repos
+    apt:
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
+    # when: ansible_distribution == 'Ubuntu' and we can add whatever we need to check as this will read from the gather_facts module
+
+
+  - name: install apache2 package # just the name of the task
+    package: # the module to execute - using package will use automatically the package manager for the distro
+      name: 
+        - apache2 # the needed package to install
+        - libapache2-mod-php
+      state: latest
+    when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
+
+#   - name: adding php
+#     apt:
+#       name: libapache2-mod-php
+#       state: latest
+#     when: ansible_distribution == 'Ubuntu'
